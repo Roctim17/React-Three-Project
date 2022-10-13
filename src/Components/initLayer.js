@@ -1,8 +1,8 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 let camera, scene, renderer;
-let geometry, material, mesh;
-
+const loader = new GLTFLoader();
 
 
 export function init() {
@@ -11,11 +11,17 @@ export function init() {
 
     scene = new THREE.Scene();
 
-    geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-    material = new THREE.MeshNormalMaterial();
+    const light = new THREE.AmbientLight( 0xffffff, 2 );
+    scene.add( light );
 
-    mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
+
+    loader.load("/models/drone/scene.gltf", (gltf) => {
+        let model = gltf.scene
+        model.scale.set(.45, .45, .45)
+        scene.add(model)
+    })
+
+
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setAnimationLoop(animation);
@@ -26,10 +32,10 @@ export function init() {
 
 // animation
 
-function animation(time) {
+function animation() {
 
-    mesh.rotation.x = time / 2000;
-    mesh.rotation.y = time / 1000;
+
+
 
     renderer.render(scene, camera);
 
